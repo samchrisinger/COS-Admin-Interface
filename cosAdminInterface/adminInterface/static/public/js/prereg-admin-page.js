@@ -1,12 +1,12 @@
-webpackJsonp([0],[
+webpackJsonp([1],[
 /* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
 'use strict';
 
 //var $osf = require('js/osfHelpers');
-var ko = __webpack_require__(1);
-var $ = __webpack_require__(4);
+var ko = __webpack_require__(2);
+var $ = __webpack_require__(1);
 
 var drafts;
 

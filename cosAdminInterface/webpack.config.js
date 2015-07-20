@@ -1,5 +1,6 @@
 var webpack = require('webpack');
 var path = require('path');
+var BundleTracker = require('webpack-bundle-tracker');
 
 var root = path.join(__dirname, 'adminInterface', 'static');
 /** Return the absolute path given a path relative to ./website/static */
@@ -17,6 +18,7 @@ var nodePath = function(dir) {
 var entry = {
     // JS
     'prereg-admin-page': staticPath('js/pages/prereg-admin-page.js'),
+    'app.min': staticPath('js/app.min.js'),
     // Commons chunk
     'vendor': [
         // Vendor libraries
@@ -43,6 +45,8 @@ var plugins = [
     new webpack.DefinePlugin({
         'define.amd': false
     }),
+    // for using webpack with Django
+    new BundleTracker({filename: './webpack-stats.json'}),
 ];
 
 
@@ -62,6 +66,7 @@ var resolve = {
 };
 
 module.exports = {
+    context: __dirname,
     entry: entry,
     plugins: plugins,
     output: output,
