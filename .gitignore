@@ -50,6 +50,7 @@ cover/
 # Assets
 ########
 .webassets-cache
+public/
 adminInterface/static/public/
 adminInterface/static/mfr/
 adminInterface/static/vendor/node_modules/
