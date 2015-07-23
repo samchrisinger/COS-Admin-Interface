@@ -95,7 +95,7 @@ function adminView(data) {
 
 $(document).ready(function() {
     // call to get drafts
-    var test = 'http://localhost:5000/drafts/';
+    var test = '/get-drafts/';
     var request = $.ajax({
         url: test
     });

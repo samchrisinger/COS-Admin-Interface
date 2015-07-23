@@ -7,6 +7,7 @@ urlpatterns = [
 	url(r'^$', 'adminInterface.views.home', name='home'),
 	#url(r'^users/$', 'adminInterface.views.users', name='users'),
 	url(r'^prereg/$', 'adminInterface.views.prereg', name='prereg'),
+	url(r'^get-drafts/$', 'adminInterface.views.get_drafts', name='get_drafts'),
 	#url(r'^analystics/$', 'adminInterface.views.analytics', name='analytics'),
     url(r'^admin/', include(admin.site.urls)),
 ]

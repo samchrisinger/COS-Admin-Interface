@@ -1,114 +1,27 @@
 import osf_settings
 
-def serialize_meta_schema(meta_schema):
-    if not meta_schema:
-        return None
-    return {
-        'schema_name': meta_schema.name,
-        'schema_version': meta_schema.schema_version,
-        'schema': meta_schema.schema
-    }
-
 def serialize_draft_registration(draft, auth=None):
-    node = draft.branched_from
+    node = draft["branched_from"]
+    #import ipdb; ipdb.set_trace()
 
     return {
-        'pk': draft._id,
-        'branched_from': serialize_node(draft.branched_from, auth),
-        'initiator': serialize_user(draft.initiator),
-        'registration_metadata': draft.registration_metadata,
-        'registration_schema': serialize_meta_schema(draft.registration_schema),
-        'initiated': str(draft.datetime_initiated),
-        'updated': str(draft.datetime_updated),
-        'config': draft.config,
-        'flags': draft.flags,
-        'urls': {
-            'edit': node.web_url_for('edit_draft_registration', draft_id=draft._id),
-            'before_register': node.api_url_for('draft_before_register', draft_id=draft._id),
-            'register': node.api_url_for('register_draft_registration', draft_id=draft._id),
-            'register_page': node.web_url_for('draft_before_register_page', draft_id=draft._id),
-            'registrations': node.web_url_for('node_registrations')
-        }
+        'pk': draft["_id"],
+        'branched_from': draft["branched_from"],
+        'initiator': draft["initiator"],
+        'registration_metadata': draft["registration_metadata"],
+        'registration_schema': draft["registration_schema"],
+        'initiated': draft["datetime_initiated"],
+        'updated': draft["datetime_updated"],
+        'config': draft["config"],
+        'flags': draft["flags"],
+        # 'urls': {
+        #     'edit': node.web_url_for('edit_draft_registration', draft_id=draft._id),
+        #     'before_register': node.api_url_for('draft_before_register', draft_id=draft._id),
+        #     'register': node.api_url_for('register_draft_registration', draft_id=draft._id),
+        #     'register_page': node.web_url_for('draft_before_register_page', draft_id=draft._id),
+        #     'registrations': node.web_url_for('node_registrations')
+        # }
     }
-
-def serialize_user(user, node=None, admin=False, full=False):
-    """Return a dictionary representation of a registered user.
-    :param User user: A User object
-    :param bool full: Include complete user properties
-    """
-    fullname = user.display_full_name(node=node)
-    ret = {
-        'id': str(user._primary_key),
-        'username': user.username,
-        'registered': user.is_registered,
-        'surname': user.family_name,
-        'fullname': fullname,
-        'shortname': fullname if len(fullname) < 50 else fullname[:23] + "..." + fullname[-23:],
-        'gravatar_url': gravatar(
-            user, use_ssl=True,
-            size=osf_settings.GRAVATAR_SIZE_ADD_CONTRIBUTOR
-        ),
-        'active': user.is_active,
-    }
-    if node is not None:
-        if admin:
-            flags = {
-                'visible': False,
-                'permission': 'read',
-            }
-        else:
-            flags = {
-                'visible': user._id in node.visible_contributor_ids,
-                'permission': reduce_permissions(node.get_permissions(user)),
-            }
-        ret.update(flags)
-    if user.is_registered:
-        ret.update({
-            'url': user.url,
-            'absolute_url': user.absolute_url,
-            'display_absolute_url': user.display_absolute_url,
-            'date_registered': user.date_registered.strftime("%Y-%m-%d"),
-        })
-
-    if full:
-        # Add emails
-        ret['emails'] = [
-            {
-                'address': each,
-                'primary': each == user.username,
-                'confirmed': True,
-            } for each in user.emails
-        ] + [
-            {
-                'address': each,
-                'primary': each == user.username,
-                'confirmed': False
-            }
-            for each in user.unconfirmed_emails
-        ]
-
-        if user.is_merged:
-            merger = user.merged_by
-            merged_by = {
-                'id': str(merger._primary_key),
-                'url': merger.url,
-                'absolute_url': merger.absolute_url
-            }
-        else:
-            merged_by = None
-        ret.update({
-            'number_projects': len(get_projects(user)),
-            'number_public_projects': len(get_public_projects(user)),
-            'activity_points': user.get_activity_points(),
-            'gravatar_url': gravatar(
-                user, use_ssl=True,
-                size=osf_settings.GRAVATAR_SIZE_PROFILE
-            ),
-            'is_merged': user.is_merged,
-            'merged_by': merged_by,
-        })
-
-    return ret
 
 def serialize_node(node, auth, primary=False):
     """Build a JSON object containing everything needed to render

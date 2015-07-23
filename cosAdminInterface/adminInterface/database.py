@@ -67,15 +67,18 @@ class DraftRegistration(AddonModelMixin, StoredObject):
     # { 'isApproved': false, 'isPendingReview': false, 'paymentSent': false }
     flags = fields.DictionaryField()
 
-DraftRegistration.set_storage(storage.MongoStorage(db, collection="draft_registration"))
+def get_all_drafts():
+	# set the collection to retrieve data from
+	DraftRegistration = db['draftregistration']
 
-all_drafts = DraftRegistration.find()
+	all_drafts = DraftRegistration.find()
 
-print all_drafts
-print len(all_drafts)
+	print all_drafts
 
-serialized_drafts = {
-	'drafts': [utils.serialize_draft_registration(d, auth) for d in all_drafts]
-}
+	auth = None
 
-print serialized_drafts
+	serialized_drafts = {
+		'drafts': [utils.serialize_draft_registration(d, auth) for d in all_drafts]
+	}
+
+	return serialized_drafts
