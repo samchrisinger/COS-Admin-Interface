@@ -1,10 +1,45 @@
 'use strict';
 
-//var $osf = require('js/osfHelpers');
+//var $osf = require('../osfHelpers');
 var ko = require('knockout');
 var $ = require('jquery');
 
 var drafts;
+
+/**
+  * A thin wrapper around ko.applyBindings that ensures that a view model
+  * is bound to the expected element. Also shows the element (and child elements) if it was
+  * previously hidden by applying the 'scripted' CSS class.
+  *
+  * Takes a ViewModel and a selector (string) or a DOM element.
+  */
+var applyBindings = function(viewModel, selector) {
+    var elem, cssSelector;
+    var $elem = $(selector);
+    if (typeof(selector.nodeName) === 'string') { // dom element
+        elem = selector;
+        // NOTE: Only works with DOM elements that have an ID
+        cssSelector = '#' + elem.id;
+    } else {
+        elem = $elem[0];
+        cssSelector = selector;
+    }
+    if ($elem.length === 0) {
+        throw "No elements matching selector '" + selector + "'";  // jshint ignore: line
+    }
+    if ($elem.length > 1) {
+        throw "Can't bind ViewModel to multiple elements."; // jshint ignore: line
+    }
+    // Ensure that the bound element is shown
+    if ($elem.hasClass('scripted')){
+        $elem.show();
+    }
+    // Also show any child elements that have the scripted class
+    $(cssSelector + ' .scripted').each(function(elm) {
+        $(this).show();
+    });
+    ko.applyBindings(viewModel, $elem[0]);
+};
 
 ko.bindingHandlers.enterkey = {
     init: function (element, valueAccessor, allBindings, viewModel) {
@@ -27,8 +62,8 @@ function adminView(data) {
     self.drafts = ko.pureComputed(function() {
         var row = self.sortBy();
         return data.drafts.sort(function (left, right) { 
-            var a = deep_value(left, row).toLowerCase()
-            var b = deep_value(right, row).toLowerCase()
+            var a = deep_value(left, row).toLowerCase();
+            var b = deep_value(right, row).toLowerCase();
             return a == b ? 0 : 
                 (a < b ? -1 : 1); 
         });
@@ -100,7 +135,7 @@ $(document).ready(function() {
         url: test
     });
     request.done(function(data) {
-        $osf.applyBindings(new adminView(data), '#prereg-row');
+        applyBindings(new adminView(data), '#prereg-row');
     });
     request.fail(function(xhr, textStatus, error) {
         console.log('Failed to populate data', {
@@ -113,6 +148,9 @@ $(document).ready(function() {
 
 var deep_value = function(obj, path){
     for (var i=0, path=path.split('.'), len=path.length; i<len; i++){
+        if (obj === undefined) {
+            return "No title";
+        }
         obj = obj[path[i]];
     };
     return obj;

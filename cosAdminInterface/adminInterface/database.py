@@ -73,8 +73,6 @@ def get_all_drafts():
 
 	all_drafts = DraftRegistration.find()
 
-	print all_drafts
-
 	auth = None
 
 	serialized_drafts = {
