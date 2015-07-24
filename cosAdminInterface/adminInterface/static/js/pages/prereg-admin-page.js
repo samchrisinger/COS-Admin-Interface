@@ -180,9 +180,11 @@ var Row = function(params) {
     self.username = params.initiator.username;
     self.initiated = self.formatTime(params.initiated);
     self.updated = self.formatTime(params.updated);
-    self.commentsSent = new CommentsSent();
-
-    //variables for editing items in row    
+    self.approved = params.is_pending_review;
+    self.registered = params.registered;
+    
+    //variables for editing items in row
+    self.commentsSent = new CommentsSent();    
     self.proofOfPub = new ProofOfPub();
     self.paymentSent = new PaymentSent();
     self.notes = new Notes();

@@ -12,6 +12,8 @@ def serialize_draft_registration(draft, auth=None):
         'registration_schema': draft["registration_schema"],
         'initiated': str(draft["datetime_initiated"]),
         'updated': str(draft["datetime_updated"]),
+        'registered': draft["registered"],
+        'is_pending_review': draft["is_pending_review"],
         #'config': draft["config"],
         #'flags': draft["flags"],
         # 'urls': {

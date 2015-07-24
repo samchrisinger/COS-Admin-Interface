@@ -14,8 +14,8 @@
         </div>
     </div>
     <div data-bind="text: 'no'" class="col-md-1" id="new_comments"></div>
-    <div data-bind="text: 'no'" class="col-md-1" id="approved"></div>
-    <div data-bind="text: 'no'" class="col-md-1" id="registered"></div>
+    <div data-bind="text: approved" class="col-md-1" id="approved"></div>
+    <div data-bind="text: registered" class="col-md-1" id="registered"></div>
     <div class="col-md-1" id="proof_of_pub">
         <div data-bind="visible: !proofOfPub.edit()">
             <span data-bind="text: proofOfPub.proofOfPub"></span><i data-bind="click: proofOfPub.editItem, clickBubble: false, event: {mouseover: proofOfPub.enlargeIcon, mouseout: proofOfPub.shrinkIcon}, attr: {class: 'fa fa-pencil'}" style="margin-left: 10px"></i>
