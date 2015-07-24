@@ -9,8 +9,8 @@
             <span data-bind="text: commentsSent.commentsSent"></span><i data-bind="click: commentsSent.editItem, clickBubble: false, event: {mouseover: commentsSent.enlargeIcon, mouseout: commentsSent.shrinkIcon}, attr: {class: 'fa fa-pencil'}" style="margin-left: 10px"></i>
         </div>
         <div data-bind="valueUpdate: 'afterkeydown', enterkey: commentsSent.stopEditing, visible: commentsSent.edit()">
-            <div><input type="radio" data-bind="value: 'no', checked: commentsSent.commentsSent"/>No</div>
-            <div><input type="radio" data-bind="value: 'yes', checked: commentsSent.commentsSent"/>Yes</div>
+            <div><input type="radio" value="no" data-bind="checked: commentsSent.commentsSent, attr:{name: 'commentsSent' + $index()}"/>No</div>
+            <div><input type="radio" value="yes" data-bind="checked: commentsSent.commentsSent, attr:{name: 'commentsSent' + $index()}"/>Yes</div>
         </div>
     </div>
     <div data-bind="text: 'no'" class="col-md-1" id="new_comments"></div>
@@ -21,8 +21,8 @@
             <span data-bind="text: proofOfPub.proofOfPub"></span><i data-bind="click: proofOfPub.editItem, clickBubble: false, event: {mouseover: proofOfPub.enlargeIcon, mouseout: proofOfPub.shrinkIcon}, attr: {class: 'fa fa-pencil'}" style="margin-left: 10px"></i>
         </div>
         <div data-bind="valueUpdate: 'afterkeydown', enterkey: proofOfPub.stopEditing, visible: proofOfPub.edit()">
-            <div><input type="radio" data-bind="value: 'no', checked: proofOfPub.proofOfPub"/>No</div>
-            <div><input type="radio" data-bind="value: 'yes', checked: proofOfPub.proofOfPub"/>Yes</div>
+            <div><input type="radio" value="no" data-bind="checked: proofOfPub.proofOfPub, attr:{name: 'proofOfPub' + $index()}"/>No</div>
+            <div><input type="radio" value="yes" data-bind="checked: proofOfPub.proofOfPub, attr:{name: 'proofOfPub' + $index()}"/>Yes</div>
         </div>
     </div>
     <div class="col-md-1" id="payment_sent">
@@ -30,15 +30,15 @@
             <span data-bind="text: paymentSent.paymentSent"></span><i data-bind="click: paymentSent.editItem, clickBubble: false, event: {mouseover: paymentSent.enlargeIcon, mouseout: paymentSent.shrinkIcon}, attr: {class: 'fa fa-pencil'}" style="margin-left: 10px"></i>
         </div>
         <div data-bind="valueUpdate: 'afterkeydown', enterkey: paymentSent.stopEditing, visible: paymentSent.edit()">
-            <div><input type="radio" data-bind="value: 'no', checked: paymentSent.paymentSent"/>No</div>
-            <div><input type="radio" data-bind="value: 'yes', checked: paymentSent.paymentSent"/>Yes</div>
+            <div><input type="radio" value="no" data-bind="checked: paymentSent.paymentSent, attr:{name: 'paymentSent' + $index()}"/>No</div>
+            <div><input type="radio" value="yes" data-bind="checked: paymentSent.paymentSent, attr:{name: 'paymentSent' + $index()}"/>Yes</div>
         </div>
     </div>
     <div class="col-md-1" id="notes">
         <div data-bind="visible: !notes.edit()">
             <span data-bind="text: notes.notes"></span><i data-bind="click: notes.editItem, clickBubble: false, event: {mouseover: notes.enlargeIcon, mouseout: notes.shrinkIcon}, attr: {class: 'fa fa-pencil'}" style="margin-left: 10px"></i>
         </div>
-        <div data-bind="valueUpdate: 'afterkeydown', enterkey: notes.stopEditing, visible: notes.edit()"">
+        <div data-bind="valueUpdate: 'afterkeydown', enterkey: notes.stopEditing, visible: notes.edit()">
             <div><input type="text" data-bind="value: notes.notes"/></div>
         </div>
     </div>

@@ -85,7 +85,10 @@ CommentsSent.prototype.stopEditing = function() {
 var ProofOfPub = function() {
     var self = this;
     self.edit = ko.observable(false);
-    self.proofOfPub = ko.observable('no');
+    self.proofOfPub = ko.observable("no");
+    self.proofOfPub.subscribe(function (value) {
+        self.change();
+    });
 };
 
 ProofOfPub.prototype.enlargeIcon = function(data, event) {
@@ -107,6 +110,10 @@ ProofOfPub.prototype.stopEditing = function() {
     var self = this;
     self.editing(false);
     self.proofOfPub.edit(false);
+};
+
+ProofOfPub.prototype.change = function() {
+    var self = this;
 };
 
 var PaymentSent = function() {
