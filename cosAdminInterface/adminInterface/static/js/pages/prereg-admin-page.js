@@ -55,95 +55,202 @@ ko.bindingHandlers.enterkey = {
     }
 };
 
-function adminView(data) {
+var CommentsSent = function() {
     var self = this;
-    self.data = data.drafts;
+    self.edit = ko.observable(false);
+    self.commentsSent = ko.observable('no');
+};
 
-    self.drafts = ko.pureComputed(function() {
+CommentsSent.prototype.enlargeIcon = function(data, event) {
+    var icon = event.currentTarget;
+    $(icon).addClass("fa-2x");
+};
+
+CommentsSent.prototype.shrinkIcon = function(data, event) {
+    var icon = event.currentTarget;
+    $(icon).removeClass("fa-2x");
+};
+CommentsSent.prototype.editItem = function() {
+    var self = this;
+    self.commentsSent.edit(true);
+};
+
+CommentsSent.prototype.stopEditing = function() {
+    var self = this;
+    self.commentsSent.edit(false);
+};
+
+var ProofOfPub = function() {
+    var self = this;
+    self.edit = ko.observable(false);
+    self.proofOfPub = ko.observable('no');
+};
+
+ProofOfPub.prototype.enlargeIcon = function(data, event) {
+    var icon = event.currentTarget;
+    $(icon).addClass("fa-2x");
+};
+
+ProofOfPub.prototype.shrinkIcon = function(data, event) {
+    var icon = event.currentTarget;
+    $(icon).removeClass("fa-2x");
+};
+ProofOfPub.prototype.editItem = function() {
+    var self = this;
+    self.proofOfPub.edit(true);
+};
+
+ProofOfPub.prototype.stopEditing = function() {
+    var self = this;
+    self.proofOfPub.edit(false);
+};
+
+var PaymentSent = function() {
+    var self = this;
+    self.edit = ko.observable(false);
+    self.paymentSent = ko.observable('no');
+};
+
+PaymentSent.prototype.enlargeIcon = function(data, event) {
+    var icon = event.currentTarget;
+    $(icon).addClass("fa-2x");
+};
+
+PaymentSent.prototype.shrinkIcon = function(data, event) {
+    var icon = event.currentTarget;
+    $(icon).removeClass("fa-2x");
+};
+PaymentSent.prototype.editItem = function() {
+    var self = this;
+    self.paymentSent.edit(true);
+};
+
+PaymentSent.prototype.stopEditing = function() {
+    var self = this;
+    self.paymentSent.edit(false);
+};
+
+var Notes = function() {
+    var self = this;
+    self.edit = ko.observable(false);
+    self.notes = ko.observable('none');
+};
+
+Notes.prototype.enlargeIcon = function(data, event) {
+    var icon = event.currentTarget;
+    $(icon).addClass("fa-2x");
+};
+
+Notes.prototype.shrinkIcon = function(data, event) {
+    var icon = event.currentTarget;
+    $(icon).removeClass("fa-2x");
+};
+Notes.prototype.editItem = function() {
+    var self = this;
+    self.notes.edit(true);
+};
+
+Notes.prototype.stopEditing = function() {
+    var self = this;
+    self.notes.edit(false);
+};
+
+var Row = function(params) {
+    var self = this;
+
+    // TODO change default
+    self.editing = ko.observable(true);
+
+    self.title = params.registration_metadata.q1.value;
+    self.fullname = params.initiator.fullname;
+    self.username = params.initiator.username;
+    self.initiated = self.formatTime(params.initiated);
+    self.updated = self.formatTime(params.updated);
+    self.commentsSent = new CommentsSent();
+
+    //variables for editing items in row    
+    self.proofOfPub = new ProofOfPub();
+    self.paymentSent = new PaymentSent();
+    self.notes = new Notes();
+};
+
+
+Row.prototype.highlightRow = function(data, event) {  
+    var row = event.currentTarget;
+    $(row).css("background","#E0EBF3"); 
+};
+
+Row.prototype.unhighlightRow = function(data, event) {
+    var row = event.currentTarget;
+    $(row).css("background",""); 
+};
+
+Row.prototype.formatTime = function(time) {
+    var parsedTime = time.split(".");
+    return parsedTime[0]; 
+};
+
+Row.prototype.goToDraft = function(data, event) {
+    var self = this;
+    if (self.editing() === false) {
+        var path = "/project/" + data.branched_from.node.id + "/draft/" + data.pk;
+        location.href = path;
+    }
+};
+
+var AdminView = function(adminSelector) {
+    var self = this;
+
+    self.adminSelector = adminSelector;
+
+    self.getDrafts = $.getJSON.bind(null, "/get-drafts/");
+
+    self.drafts = ko.observableArray();
+    self.loading = ko.observable(true);
+
+    self.sortedDrafts = ko.pureComputed(function() {
         var row = self.sortBy();
-        return data.drafts.sort(function (left, right) { 
+        return self.drafts().sort(function (left, right) { 
             var a = deep_value(left, row).toLowerCase();
             var b = deep_value(right, row).toLowerCase();
             return a == b ? 0 : 
                 (a < b ? -1 : 1); 
         });
     }, this);
+
     self.sortBy = ko.observable('registration_metadata.q1.value');
 
-    // variables for editing items in row
-    self.edit = ko.observable(false);
-    self.item = ko.observable();
-    self.commentsSent = ko.observable('no');
-    self.proofOfPub = ko.observable('no');
-    self.paymentSent = ko.observable('no');
-    self.notes = ko.observable('none');
-
-    self.setSort = function(data, event) {
-        self.sortBy(event.target.id);
-    };
-
-    self.highlightRow = function(data, event) {  
-        var row = event.currentTarget;
-        $(row).css("background","#E0EBF3"); 
-    };
-
-    self.unhighlightRow = function(data, event) {
-        var row = event.currentTarget;
-        $(row).css("background",""); 
-    };
-
-    self.formatTime = function(time) {
-        var parsedTime = time.split(".");
-        return parsedTime[0]; 
-    };
-
-    self.goToDraft = function(data, event) {
-        if (self.edit() === false) {
-            var path = "/project/" + data.branched_from.node.id + "/draft/" + data.pk;
-            location.href = path;
-        }
-    };
-
-    self.enlargeIcon = function(data, event) {
-        var icon = event.currentTarget;
-        $(icon).addClass("fa-2x");
-    };
-
-    self.shrinkIcon = function(data, event) {
-        var icon = event.currentTarget;
-        $(icon).removeClass("fa-2x");
-    };
-
-    self.editItem = function(item) {
-        self.edit(true);
-        $('.'+item).hide();
-        $('.input_' + item).show();
-        $('.input_' + item).focus();
-    };
-
-    self.stopEditing = function(item) {
-        $('.'+item).show();
-        $('.input_' + item).hide();
-    };
-
+    self.init();
 }
 
+AdminView.prototype.init = function() {
+    var self = this;
+
+    // '#prereg-row'
+    applyBindings(self, self.adminSelector);
+
+    var getDrafts = self.getDrafts();
+
+    // create new view model for each row
+    getDrafts.then(function(response) {
+        self.drafts(
+            $.map(response.drafts, function(draft){
+                return new Row(draft);
+            })
+        );
+    });
+
+    $.when(getDrafts).then(function() {
+        self.loading(false);
+    });
+}
+
+AdminView.prototype.setSort = function(data, event) {
+    self.sortBy(event.target.id);
+};
+
 $(document).ready(function() {
-    // call to get drafts
-    var test = '/get-drafts/';
-    var request = $.ajax({
-        url: test
-    });
-    request.done(function(data) {
-        applyBindings(new adminView(data), '#prereg-row');
-    });
-    request.fail(function(xhr, textStatus, error) {
-        console.log('Failed to populate data', {
-            url: test,
-            textStatus: textStatus,
-            error: error
-        });
-    });
+    var adminView = new AdminView('#prereg-row');
 });
 
 var deep_value = function(obj, path){

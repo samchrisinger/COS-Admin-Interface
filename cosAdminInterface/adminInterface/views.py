@@ -14,7 +14,6 @@ def prereg(request):
 
 def get_drafts(request):
 	all_drafts = get_all_drafts()
-	#import ipdb; ipdb.set_trace()
 	return HttpResponse(json.dumps(all_drafts), content_type='application/json')
 
 # def analytics(request):
