@@ -72,11 +72,13 @@ CommentsSent.prototype.shrinkIcon = function(data, event) {
 };
 CommentsSent.prototype.editItem = function() {
     var self = this;
+    self.editing(true);
     self.commentsSent.edit(true);
 };
 
 CommentsSent.prototype.stopEditing = function() {
     var self = this;
+    self.editing(false);
     self.commentsSent.edit(false);
 };
 
@@ -97,11 +99,13 @@ ProofOfPub.prototype.shrinkIcon = function(data, event) {
 };
 ProofOfPub.prototype.editItem = function() {
     var self = this;
+    self.editing(true);
     self.proofOfPub.edit(true);
 };
 
 ProofOfPub.prototype.stopEditing = function() {
     var self = this;
+    self.editing(false);
     self.proofOfPub.edit(false);
 };
 
@@ -122,11 +126,13 @@ PaymentSent.prototype.shrinkIcon = function(data, event) {
 };
 PaymentSent.prototype.editItem = function() {
     var self = this;
+    self.editing(true);
     self.paymentSent.edit(true);
 };
 
 PaymentSent.prototype.stopEditing = function() {
     var self = this;
+    self.editing(false);
     self.paymentSent.edit(false);
 };
 
@@ -147,19 +153,20 @@ Notes.prototype.shrinkIcon = function(data, event) {
 };
 Notes.prototype.editItem = function() {
     var self = this;
+    self.editing(true);
     self.notes.edit(true);
 };
 
 Notes.prototype.stopEditing = function() {
     var self = this;
+    self.editing(false);
     self.notes.edit(false);
 };
 
 var Row = function(params) {
     var self = this;
 
-    // TODO change default
-    self.editing = ko.observable(true);
+    self.editing = ko.observable(false);
 
     self.title = params.registration_metadata.q1.value;
     self.fullname = params.initiator.fullname;
