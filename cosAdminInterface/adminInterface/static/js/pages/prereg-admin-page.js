@@ -225,7 +225,7 @@ var AdminView = function(adminSelector) {
         });
     }, this);
 
-    self.sortBy = ko.observable('registration_metadata.q1.value');
+    self.sortBy = ko.observable('title');
 
     self.init();
 }
@@ -253,6 +253,7 @@ AdminView.prototype.init = function() {
 }
 
 AdminView.prototype.setSort = function(data, event) {
+    var self = this;
     self.sortBy(event.target.id);
 };
 
