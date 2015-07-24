@@ -266,7 +266,13 @@ var deep_value = function(obj, path){
         if (obj === undefined) {
             return "No title";
         }
-        obj = obj[path[i]];
+        if (path[i].indexOf('(') === -1) {
+            obj = obj[path[i]];
+        } else {
+            var func = path[i].split('(');
+            obj = obj[func[0]]();
+        }
+        
     };
     return obj;
 };
