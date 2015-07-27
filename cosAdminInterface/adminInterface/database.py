@@ -5,6 +5,8 @@ from modularodm import storage
 from modularodm import fields
 from modularodm.storedobject import StoredObject
 
+# from modularodm.query.querydialect import DefaultQueryDialect as Q
+
 import osf_settings
 import utils
 
@@ -69,14 +71,20 @@ class DraftRegistration(AddonModelMixin, StoredObject):
 
 def get_all_drafts():
 	# set the collection to retrieve data from
-	DraftRegistration = db['draftregistration']
+	draftCollection = db['draftregistration']
 
-	all_drafts = DraftRegistration.find()
+	# TODO 
+	# add query parameters to only retrieve submitted drafts
+	all_drafts = draftCollection.find()
 
 	auth = None
 
 	serialized_drafts = {
 		'drafts': [utils.serialize_draft_registration(d, auth) for d in all_drafts]
 	}
-
 	return serialized_drafts
+
+# User.set_storage(storage.MongoStorage(db, collection="user"))
+# use class for draft (should be the same as what is already created)
+# create new instance of a class and then use .save to update db
+# DraftRegistration.set_storage(storage.MongoStorage(db, collection=draftCollection))

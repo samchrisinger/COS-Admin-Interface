@@ -180,8 +180,14 @@ var Row = function(params) {
     self.username = params.initiator.username;
     self.initiated = self.formatTime(params.initiated);
     self.updated = self.formatTime(params.updated);
+    // this will be in flags when using the proper branch
     self.approved = params.is_pending_review;
-    self.registered = params.registered;
+    if (params.registered === null) {
+        self.registered = 'no';
+    } else {
+        self.registered = 'yes';
+    }
+    
     
     //variables for editing items in row
     self.commentsSent = new CommentsSent();    
