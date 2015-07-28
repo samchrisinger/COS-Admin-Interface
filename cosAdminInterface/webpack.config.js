@@ -19,13 +19,18 @@ var entry = {
     // JS
     'prereg-admin-page': staticPath('js/pages/prereg-admin-page.js'),
     'app.min': staticPath('js/app.min.js'),
-    //'osfHelpers': staticPath('js/osfHelpers.js'),
     // Commons chunk
     'vendor': [
         // Vendor libraries
         'knockout',
         'bootstrap',
         'URIjs',
+        'bootbox',
+        'mithril',
+        'moment',
+        'raven-js',
+        'mithril'
+        // common internal modules
         //'js/osfHelpers'
     ]
 };

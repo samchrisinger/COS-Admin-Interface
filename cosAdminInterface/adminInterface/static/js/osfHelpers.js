@@ -166,11 +166,55 @@ var applyBindings = function(viewModel, selector) {
     ko.applyBindings(viewModel, $elem[0]);
 };
 
-module.exports = window.$.osf = {
+/**
+ * Use a search function to get the index of an object in an array
+ *
+ * @param {Array} array
+ * @param {Function} searchFn: function that returns true when an item matching the search conditions is found
+ * @returns {Integer} index of matched item or -1 if no matching item is found
+ **/
+function indexOf(array, searchFn) {
+    var len = array.length;
+    for(var i = 0; i < len; i++) {
+        if(searchFn(array[i])) {
+            return i;
+        }
+    }
+    return -1;
+}
+/**
+ * Maps an object to an array of {key: KEY, value: VALUE} pairs
+ *
+ * @param {Object} obj
+ * @returns {Array} array of key, value pairs
+**/
+var iterObject = function(obj) {
+    var ret = [];
+    $.each(obj, function(prop, value) {
+        ret.push({
+            key: prop,
+            value: value
+        });
+    });
+    return ret;
+};
+/** 
+ * Asserts that a value is falsey or an empty string
+ *
+ * @param {String} item
+ * @returns {Boolean} true if item is flasey or an empty string else false
+**/
+function isBlank(item) {
+    return !item || /^\s*$/.test(item || '');
+}
+
+module.exports = {
     postJSON: postJSON,
     putJSON: putJSON,
     setXHRAuthorization: setXHRAuthorization,
     apiV2Url: apiV2Url, 
     applyBindings: applyBindings,
- 
+    isBlank: isBlank,
+    iterObject: iterObject,
+    indexOf: indexOf,
 };

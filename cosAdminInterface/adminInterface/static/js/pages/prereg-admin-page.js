@@ -1,6 +1,6 @@
 'use strict';
 
-//var $osf = require('../osfHelpers');
+var $osf = require('js/osfHelpers');
 var ko = require('knockout');
 var $ = require('jquery');
 
@@ -13,33 +13,33 @@ var drafts;
   *
   * Takes a ViewModel and a selector (string) or a DOM element.
   */
-var applyBindings = function(viewModel, selector) {
-    var elem, cssSelector;
-    var $elem = $(selector);
-    if (typeof(selector.nodeName) === 'string') { // dom element
-        elem = selector;
-        // NOTE: Only works with DOM elements that have an ID
-        cssSelector = '#' + elem.id;
-    } else {
-        elem = $elem[0];
-        cssSelector = selector;
-    }
-    if ($elem.length === 0) {
-        throw "No elements matching selector '" + selector + "'";  // jshint ignore: line
-    }
-    if ($elem.length > 1) {
-        throw "Can't bind ViewModel to multiple elements."; // jshint ignore: line
-    }
-    // Ensure that the bound element is shown
-    if ($elem.hasClass('scripted')){
-        $elem.show();
-    }
-    // Also show any child elements that have the scripted class
-    $(cssSelector + ' .scripted').each(function(elm) {
-        $(this).show();
-    });
-    ko.applyBindings(viewModel, $elem[0]);
-};
+// var applyBindings = function(viewModel, selector) {
+//     var elem, cssSelector;
+//     var $elem = $(selector);
+//     if (typeof(selector.nodeName) === 'string') { // dom element
+//         elem = selector;
+//         // NOTE: Only works with DOM elements that have an ID
+//         cssSelector = '#' + elem.id;
+//     } else {
+//         elem = $elem[0];
+//         cssSelector = selector;
+//     }
+//     if ($elem.length === 0) {
+//         throw "No elements matching selector '" + selector + "'";  // jshint ignore: line
+//     }
+//     if ($elem.length > 1) {
+//         throw "Can't bind ViewModel to multiple elements."; // jshint ignore: line
+//     }
+//     // Ensure that the bound element is shown
+//     if ($elem.hasClass('scripted')){
+//         $elem.show();
+//     }
+//     // Also show any child elements that have the scripted class
+//     $(cssSelector + ' .scripted').each(function(elm) {
+//         $(this).show();
+//     });
+//     ko.applyBindings(viewModel, $elem[0]);
+// };
 
 ko.bindingHandlers.enterkey = {
     init: function (element, valueAccessor, allBindings, viewModel) {
@@ -249,7 +249,7 @@ AdminView.prototype.init = function() {
     var self = this;
 
     // '#prereg-row'
-    applyBindings(self, self.adminSelector);
+    $osf.applyBindings(self, self.adminSelector);
 
     var getDrafts = self.getDrafts();
 
