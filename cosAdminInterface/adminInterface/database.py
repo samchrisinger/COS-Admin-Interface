@@ -1,11 +1,9 @@
 import pymongo
 import os
 
-from modularodm import storage
-from modularodm import fields
-from modularodm.storedobject import StoredObject
+from modularodm import Q
 
-# from modularodm.query.querydialect import DefaultQueryDialect as Q
+from osf_models import DraftRegistration, MetaSchema
 
 import osf_settings
 import utils
@@ -34,41 +32,6 @@ db = _get_current_database()
 print client
 print db
 
-class AddonModelMixin(StoredObject):
-
-    _meta = {
-        'abstract': True,
-    }
-
-class DraftRegistration(AddonModelMixin, StoredObject):
-
-    is_draft_registration = True
-
-    _id = fields.StringField(primary=True, default=lambda: str(ObjectId()))
-
-    datetime_initiated = fields.DateTimeField(auto_now_add=True)
-    datetime_updated = fields.DateTimeField(auto_now=True)
-
-    branched_from = fields.ForeignField('node')
-
-    initiator = fields.ForeignField('user')
-
-    # Dictionary field mapping question id to a question's comments and answer
-    # {<qid>: { 'comments': [<Comment1>, <Comment2>], 'value': 'string answer }
-    registration_metadata = fields.DictionaryField(default=dict)
-    registration_schema = fields.ForeignField('metaschema')
-    registered_node = fields.ForeignField('node')
-
-    storage = fields.ForeignField('osfstoragenodesettings')
-
-    # Dictionary field mapping
-    # { 'requiresApproval': true, 'fulfills': [{ 'name': 'Prereg Prize', 'info': <infourl>  }]  }
-    config = fields.DictionaryField()
-
-    # Dictionary field mapping a draft's states during the review process to their value
-    # { 'isApproved': false, 'isPendingReview': false, 'paymentSent': false }
-    flags = fields.DictionaryField()
-
 def get_all_drafts():
 	# set the collection to retrieve data from
 	draftCollection = db['draftregistration']
@@ -88,3 +51,12 @@ def get_all_drafts():
 # use class for draft (should be the same as what is already created)
 # create new instance of a class and then use .save to update db
 # DraftRegistration.set_storage(storage.MongoStorage(db, collection=draftCollection))
+
+get_schema_or_fail = lambda query: get_or_http_error(MetaSchema, query)
+
+def get_metaschema(schema_name, schema_version=1, *args, **kwargs):
+    meta_schema = get_schema_or_fail(
+        Q('name', 'eq', schema_name) &
+        Q('schema_version', 'eq', schema_version)
+    )
+    return serialize_meta_schema(meta_schema), http.OK
