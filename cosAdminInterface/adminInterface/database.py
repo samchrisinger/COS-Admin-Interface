@@ -3,7 +3,11 @@ import os
 
 from modularodm import Q
 
-from osf_models import DraftRegistration, MetaSchema
+# importing from the osf.io submodule
+import sys
+sys.path.insert(0, '/Users/laurenbarker/GitHub/COS-Admin-Interface/cosAdminInterface/adminInterface/osf.io/')
+from website.project.model import MetaSchema, DraftRegistration
+#from osf_models import DraftRegistration, MetaSchema
 
 import osf_settings
 import utils
