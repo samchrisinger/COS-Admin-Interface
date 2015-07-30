@@ -177,11 +177,21 @@ Row.prototype.formatTime = function(time) {
     return parsedTime[0]; 
 };
 
+// TODO
 Row.prototype.goToDraft = function(data, event) {
     var self = this;
     if (self.editing() === false) {
-        var path = "/project/" + data.branched_from.node.id + "/draft/" + data.pk;
-        location.href = path;
+        //var path = "/project/" + data.branched_from.node.id + "/draft/" + data.pk;
+        var draftEditor = new RegistrationEditor({
+            schemas: '/get-schemas/',
+            update: node.urls.api + 'draft/{draft_pk}/',
+            get: node.urls.api + 'draft/{draft_pk}/'
+        }, 'registrationEditor');
+
+        var draft = new registrationUtils.Draft(window.contextVars.draft);
+        draftEditor.init(draft);
+        window.draftEditor = draftEditor;
+        $osf.applyBindings(draftEditor, '#draftRegistrationScope');
     }
 };
 

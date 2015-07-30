@@ -5,10 +5,9 @@ from django.contrib import admin
 
 urlpatterns = [
 	url(r'^$', 'adminInterface.views.home', name='home'),
-	#url(r'^users/$', 'adminInterface.views.users', name='users'),
 	url(r'^prereg/$', 'adminInterface.views.prereg', name='prereg'),
 	url(r'^get-drafts/$', 'adminInterface.views.get_drafts', name='get_drafts'),
-	#url(r'^analystics/$', 'adminInterface.views.analytics', name='analytics'),
+	url(r'^get-schemas/$', 'adminInterface.views.get_schemas', name='get_schemas'),
     url(r'^admin/', include(admin.site.urls)),
 ]
 
