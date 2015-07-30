@@ -9,9 +9,8 @@ require('js/koHelpers');
 var $osf = require('js/osfHelpers');
 var language = require('js/osfLanguage').registrations;
 
-var editorExtensions = require('js/registrationEditorExtensions');
-
-var currentUser = window.contextVars.currentUser || {
+//var currentUser = window.contextVars.currentUser || {
+var currentUser = {
     id: null,
     name: 'Anonymous'
 };
@@ -537,9 +536,6 @@ var RegistrationEditor = function(urls, editorId) {
 
     self.iterObject = $osf.iterObject;
 
-    self.extensions = {
-        'osf-upload': editorExtensions.Uploader
-    };
 };
 /**
  * Load draft data into the editor

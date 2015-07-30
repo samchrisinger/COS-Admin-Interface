@@ -6,9 +6,6 @@ import json
 def home(request):
 	return render(request, 'base.html', {})
 
-# def users(request):
-# 	return render(request, 'users.html', {})
-
 def prereg(request):
 	return render(request, 'prereg/prereg.html', {})
 
@@ -19,6 +16,3 @@ def get_drafts(request):
 def get_schemas(request):
 	schema = get_schema()
 	return HttpResponse(json.dumps(schema), content_type='application/json')
-
-# def analytics(request):
-# 	return render(request, 'analytics.html', {})

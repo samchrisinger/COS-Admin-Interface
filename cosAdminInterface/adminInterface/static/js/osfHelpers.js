@@ -207,6 +207,22 @@ var iterObject = function(obj) {
 function isBlank(item) {
     return !item || /^\s*$/.test(item || '');
 }
+/**
+ * Create a function that negates the passed value
+ *
+ * @param {Any} any: either a function or some other value; for function values the return value of the function is negated
+ * @returns {Function}: a function that returns the negated value of any (or the return value of any when called with the same arguments)
+ **/
+function not(any) {
+    return function() {
+        try {
+            return !any.apply(this, arguments);
+        }
+        catch(err) {
+            return !any;
+        }
+    };
+}
 
 module.exports = {
     postJSON: postJSON,
@@ -217,4 +233,5 @@ module.exports = {
     isBlank: isBlank,
     iterObject: iterObject,
     indexOf: indexOf,
+    not: not
 };
