@@ -1,3 +1,0 @@
-[submodule "cosAdminInterface/adminInterface/osf.io"]
-	path = cosAdminInterface/adminInterface/osf.io
-	url = https://github.com/CenterForOpenScience/osf.io.git
