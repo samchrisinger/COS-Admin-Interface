@@ -10,7 +10,7 @@ import json
 
 from adminInterface.forms import RegistrationForm, LoginForm
 from adminInterface.models import AdminUser
-import logging, utils
+import logging
 
 @login_required
 def home(request):
