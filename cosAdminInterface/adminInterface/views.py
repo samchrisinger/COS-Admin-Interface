@@ -1,7 +1,7 @@
 from django.http import HttpResponseRedirect
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, logout as logout_user, login as auth_login
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 
 from database import get_all_drafts
 from django.http import HttpResponse
@@ -12,14 +12,14 @@ from adminInterface.models import AdminUser
 import logging
 
 def home(request):
-	context = {}
 	if request.user.is_authenticated():
 		context = {'user': request.user}
-	return render(request, 'base.html', context)
+		return render(request, 'base.html', context)
+	return redirect('/login/')
 
 def register(request):
 	if request.user.is_authenticated():
-		return HttpResponseRedirect('/')
+		return redirect('/')
 	if request.method == 'POST':
 		form = RegistrationForm(request.POST)
 		if form.is_valid():
@@ -33,7 +33,7 @@ def register(request):
 			admin_user.save()
 			admin_user = authenticate(username=username, password=password)
 			auth_login(request, admin_user)
-			return HttpResponseRedirect('/')
+			return redirect('/')
 		else:
 			#TODO refactor custom validations
 			context = {'form': form}
@@ -44,32 +44,31 @@ def register(request):
 		context = {'form': form}
 		return render(request, 'register.html', context)
 
-
 def login(request):
 	if request.user.is_authenticated():
-		return HttpResponseRedirect('/')
-	if request.method == 'POST':
-		form = LoginForm(request.POST)
-		if form.is_valid():
-			username = form.cleaned_data['username']
-			password = form.cleaned_data['password']
-			admin_user = authenticate(username=username, password=password)
-			if admin_user is not None:
-				auth_login(request, admin_user)
-				return HttpResponseRedirect('/')
-			else:
-				return HttpResponseRedirect('/login/')
-	form = LoginForm()
+		return redirect('/')
+	form = LoginForm(request.POST or None)
+	if request.POST and form.is_valid():
+		username = form.cleaned_data.get('username')
+		password = form.cleaned_data.get('password')
+		admin_user = authenticate(username=username, password=password)
+		if admin_user:
+			auth_login(request, admin_user)
+			return redirect('/')
+		else:
+			return redirect('/login/')
 	context = {'form': form}
 	return render(request, 'login.html', context)
 
 def logout(request):
 	logout_user(request)
-	return HttpResponseRedirect('/login/')
-
+	return redirect('/login/')
 
 def prereg(request):
-	return render(request, 'prereg/prereg.html', {})
+	if request.user.is_authenticated():
+		context = {'user': request.user}
+		return render(request, 'prereg/prereg.html', context)
+	return redirect('/login/')
 
 def get_drafts(request):
 	all_drafts = get_all_drafts()

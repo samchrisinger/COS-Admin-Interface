@@ -41,21 +41,12 @@
 
         <!-- Header Navbar -->
         <nav class="navbar navbar-static-top" role="navigation">
-          <ul class="nav navbar-nav">
-           <li>
-            <span><b>Welcome, </b>{{ user.get_username }}</span>
-            </li>
-          </ul>
           <!-- Navbar Right Menu -->
           <div class="navbar-custom-menu">
             <ul class="nav navbar-nav">
               <!-- User Account Menu -->
               <li>
-                {% if user.is_authenticated %}
                 <a href="/logout/" class="btn btn-danger btn-flat">Sign out</a>
-                {% else %}
-                <a href="/login/" class="btn btn-danger btn-flat">Log in</a>
-                {% endif %}
               </li>
             </ul>
           </div>
@@ -81,9 +72,10 @@
 
         <!-- Main content -->
         <section class="content">
+          <h1> Hello {{ user.get_username }}, </h1>
           {% block content %}
           <h1>
-            OSF Admin Home Page
+           Welcome to the OSF Admin Home Page
           </h1>
           <!-- Your Page Content Here -->
           {% endblock %}
@@ -93,7 +85,7 @@
       <!-- Main Footer -->
       <footer class="main-footer">
         <!-- Default to the left -->
-        <strong>Copyright &copy; 2015 <a href="#">Company</a>.</strong> All rights reserved.
+        <strong>Copyright &copy; 2015 <a href="http://www.osf.io">osf.io</a>.</strong> All rights reserved.
       </footer>
 
     </div><!-- ./wrapper -->
