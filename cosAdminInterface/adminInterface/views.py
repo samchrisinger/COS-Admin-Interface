@@ -1,6 +1,7 @@
 from django.http import HttpResponseRedirect
-from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, logout as logout_user, login as auth_login
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
 from django.shortcuts import render, redirect
 
 from database import get_all_drafts
@@ -9,13 +10,12 @@ import json
 
 from adminInterface.forms import RegistrationForm, LoginForm
 from adminInterface.models import AdminUser
-import logging
+import logging, utils
 
+@login_required
 def home(request):
-	if request.user.is_authenticated():
-		context = {'user': request.user}
-		return render(request, 'base.html', context)
-	return redirect('/login/')
+	context = {'user': request.user}
+	return render(request, 'base.html', context)
 
 def register(request):
 	if request.user.is_authenticated():
@@ -35,7 +35,6 @@ def register(request):
 			auth_login(request, admin_user)
 			return redirect('/')
 		else:
-			#TODO refactor custom validations
 			context = {'form': form}
 			return render(request, 'register.html', context)
 	else:
@@ -64,12 +63,12 @@ def logout(request):
 	logout_user(request)
 	return redirect('/login/')
 
+@login_required
 def prereg(request):
-	if request.user.is_authenticated():
-		context = {'user': request.user}
-		return render(request, 'prereg/prereg.html', context)
-	return redirect('/login/')
+	context = {'user': request.user}
+	return render(request, 'prereg/prereg.html', context)
 
+@login_required
 def get_drafts(request):
 	all_drafts = get_all_drafts()
 	return HttpResponse(json.dumps(all_drafts), content_type='application/json')
