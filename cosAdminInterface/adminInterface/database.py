@@ -1,13 +1,16 @@
 import pymongo
 import os
+import httplib as http
 
 from modularodm import Q
+from modularodm import storage
 
 # importing from the osf.io submodule
 import sys
 sys.path.insert(0, '/Users/laurenbarker/GitHub/COS-Admin-Interface/cosAdminInterface/adminInterface/osf.io/')
 from website.project.model import MetaSchema, DraftRegistration
-#from osf_models import DraftRegistration
+from framework.mongo.utils import get_or_http_error
+from website.project.metadata.utils import serialize_meta_schema, serialize_draft_registration
 
 import osf_settings
 import utils
@@ -31,10 +34,10 @@ def _get_current_database():
     """
     return client[osf_settings.DB_NAME]
 
+# create new instance of a class and then use .save to update db
 db = _get_current_database()
-
-print client
-print db
+DraftRegistration.set_storage(storage.MongoStorage(db, collection="draftregistration"))
+MetaSchema.set_storage(storage.MongoStorage(db, collection="metaschema"))
 
 def get_all_drafts():
 	# set the collection to retrieve data from
@@ -51,14 +54,16 @@ def get_all_drafts():
 	}
 	return serialized_drafts
 
-# User.set_storage(storage.MongoStorage(db, collection="user"))
-# use class for draft (should be the same as what is already created)
-# create new instance of a class and then use .save to update db
-# DraftRegistration.set_storage(storage.MongoStorage(db, collection=draftCollection))
-
 get_schema_or_fail = lambda query: get_or_http_error(MetaSchema, query)
+def get_schema():
+	metaCollection = db['metaschema']
+	all_schemas = metaCollection.find()
+	serialized_schemas = {
+		'schemas': [utils.serialize_meta_schema(s) for s in all_schemas]
+	}
+	return serialized_schemas
 
-def get_metaschema(schema_name, schema_version=1, *args, **kwargs):
+def get_metaschema(schema_name, schema_version=1):
     meta_schema = get_schema_or_fail(
         Q('name', 'eq', schema_name) &
         Q('schema_version', 'eq', schema_version)

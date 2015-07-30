@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from database import get_all_drafts, get_metaschema
+from database import get_all_drafts, get_schema
 from django.http import HttpResponse
 import json
 
