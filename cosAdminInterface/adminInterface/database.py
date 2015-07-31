@@ -8,12 +8,19 @@ from modularodm import storage
 # importing from the osf.io submodule
 import sys
 sys.path.insert(0, '/Users/laurenbarker/GitHub/COS-Admin-Interface/cosAdminInterface/adminInterface/osf.io/')
-from website.project.model import MetaSchema, DraftRegistration
+from website.project.model import MetaSchema, DraftRegistration, Node
 from framework.mongo.utils import get_or_http_error
+from framework.auth.core import User
+from framework.auth import Auth
 from website.project.metadata.utils import serialize_meta_schema, serialize_draft_registration
+from website.app import do_set_backends, init_addons
+from website import settings as osf_settings
 
-import osf_settings
 import utils
+
+init_addons(osf_settings, routes=False)
+do_set_backends(osf_settings)
+adminUser = User.load('dsmpw')
 
 def get_mongo_client():
     """Create MongoDB client and authenticate database.
@@ -35,19 +42,19 @@ def _get_current_database():
     return client[osf_settings.DB_NAME]
 
 # create new instance of a class and then use .save to update db
-db = _get_current_database()
-DraftRegistration.set_storage(storage.MongoStorage(db, collection="draftregistration"))
-MetaSchema.set_storage(storage.MongoStorage(db, collection="metaschema"))
+# db = _get_current_database()
+# DraftRegistration.set_storage(storage.MongoStorage(db, collection="draftregistration"))
+# MetaSchema.set_storage(storage.MongoStorage(db, collection="metaschema"))
+# User.set_storage(storage.MongoStorage(db, collection="user"))
+# Node.set_storage(storage.MongoStorage(db, collection="node"))
+
 
 def get_all_drafts():
-	# set the collection to retrieve data from
-	draftCollection = db['draftregistration']
-
 	# TODO 
 	# add query parameters to only retrieve submitted drafts
-	all_drafts = draftCollection.find()
+	all_drafts = DraftRegistration.find()
 
-	auth = None
+	auth = Auth(adminUser)
 
 	serialized_drafts = {
 		'drafts': [utils.serialize_draft_registration(d, auth) for d in all_drafts]
@@ -69,3 +76,16 @@ def get_metaschema(schema_name, schema_version=1):
         Q('schema_version', 'eq', schema_version)
     )
     return serialize_meta_schema(meta_schema), http.OK
+
+ # def edit_draft_registration(auth, node, draft_id, **kwargs):
+#     draft = DraftRegistration.load(draft_id)
+#     if not draft:
+#         raise HTTPError(http.NOT_FOUND)
+
+#     messages = draft.before_edit(auth)
+#     for message in messages:
+#         status.push_status_message(message)
+
+#     ret = project_utils.serialize_node(node, auth, primary=True)
+#     ret['draft'] = serialize_draft_registration(draft, auth)
+#     return ret

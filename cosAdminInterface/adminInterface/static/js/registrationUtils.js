@@ -1,3 +1,5 @@
+require('css/registrations.css');
+
 var $ = require('jquery');
 var ko = require('knockout');
 var bootbox = require('bootbox');
@@ -194,7 +196,7 @@ var Question = function(data, id) {
     self.extra = {};
 
     self.showExample = ko.observable(false);
-    self.showUploader = ko.observable(false);
+    self.showUploader = ko.observable(true);
 
     self.comments = ko.observableArray(
         $.map(data.comments || [], function(comment) {
@@ -259,12 +261,6 @@ Question.prototype.addComment = function(save) {
  **/
 Question.prototype.toggleExample = function(){
     this.showExample(!this.showExample());
-};
-/**
- * Shows/hides the Question uploader
- **/
-Question.prototype.toggleUploader = function(){
-    this.showUploader(!this.showUploader());
 };
 /**
  * @returns {object} valid 
@@ -600,9 +596,6 @@ RegistrationEditor.prototype.context = function(data) {
         readonly: this.readonly
     });
 
-    if (this.extensions[data.type]) {
-        return new this.extensions[data.type](data);
-    }
     return data;
 };
 /**

@@ -69,7 +69,7 @@
           <br />
           <div class="row">
             <div class="col-md-12">
-              <div class="form-group" data-bind="css: {has-success: $data.isComplete}">
+              <div class="form-group" data-bind="css: {'has-success': $data.isComplete}">
                 <span data-bind="with: $root.context($data)">
                   <span data-bind="if: $root.showValidation"> 
                     <ul class="list-group" data-bind="foreach: $data.validationMessages">
@@ -91,13 +91,11 @@
 </script>
 <script type="text/html" id="editor">
   <span data-bind="template: {data: $data, name: 'editorBase'}"></span>
-  <!-- TODO: uncomment to enable comments
   <div class="row">
     <div class="col-md-12">
       <div class="well" data-bind="template: {data: $data, name: 'commentable'}"></div>
     </div>
   </div>
-  -->
 </script>
 
 <!-- Commnetable -->

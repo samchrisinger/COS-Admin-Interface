@@ -140,6 +140,9 @@ Notes.prototype.stopEditing = function() {
 var Row = function(params) {
     var self = this;
 
+    self.params = params;
+    self.viewingDraft = ko.observable(false);
+
     self.editing = ko.observable(false);
 
     self.title = params.registration_metadata.q1.value;
@@ -183,6 +186,7 @@ Row.prototype.formatTime = function(time) {
 Row.prototype.goToDraft = function(data, event) {
     var self = this;
     if (self.editing() === false) {
+        self.viewingDraft(true);
         //var path = "/project/" + data.branched_from.node.id + "/draft/" + data.pk;
         var draftEditor = new RegistrationEditor({
             schemas: '/get-schemas/',
@@ -190,7 +194,7 @@ Row.prototype.goToDraft = function(data, event) {
             //get: node.urls.api + 'draft/{draft_pk}/'
         }, 'registrationEditor');
 
-        var draft = new registrationUtils.Draft(window.contextVars.draft);
+        var draft = new registrationUtils.Draft(self.params);
         draftEditor.init(draft);
         window.draftEditor = draftEditor;
         $osf.applyBindings(draftEditor, '#draftRegistrationScope');

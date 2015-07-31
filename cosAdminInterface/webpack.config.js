@@ -19,10 +19,12 @@ var entry = {
     // JS
     'prereg-admin-page': staticPath('js/pages/prereg-admin-page.js'),
     'app.min': staticPath('js/app.min.js'),
+    'registration-edit-page': staticPath('js/pages/registration-edit-page.js'),
     // Commons chunk
     'vendor': [
         // Vendor libraries
         'knockout',
+        'knockout.validation',
         'bootstrap',
         'URIjs',
         'bootbox',
