@@ -1,6 +1,6 @@
 from django.http import HttpResponseRedirect
 from django.contrib.auth import authenticate, logout as logout_user, login as auth_login
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.models import User
 from django.shortcuts import render, redirect
 
@@ -11,6 +11,10 @@ import json
 from adminInterface.forms import RegistrationForm, LoginForm
 from adminInterface.models import AdminUser
 import logging, utils
+
+
+def is_in_prereg(user):
+	return user.groups.filter(name='prereg_group').exists()
 
 @login_required
 def home(request):
@@ -64,6 +68,7 @@ def logout(request):
 	return redirect('/login/')
 
 @login_required
+@user_passes_test(is_in_prereg)
 def prereg(request):
 	context = {'user': request.user}
 	return render(request, 'prereg/prereg.html', context)
