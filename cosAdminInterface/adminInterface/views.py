@@ -69,6 +69,7 @@ def prereg(request):
 	context = {'user': request.user}
 	return render(request, 'prereg/prereg.html', context)
 
+@login_required
 def prereg_form(request, draft_pk):
 	draft = get_draft(draft_pk)
 	#import ipdb; ipdb.set_trace()
@@ -80,6 +81,7 @@ def get_drafts(request):
 	all_drafts = get_all_drafts()
 	return HttpResponse(json.dumps(all_drafts), content_type='application/json')
 
+@login_required
 def get_schemas(request):
 	schema = get_schema()
 	return HttpResponse(json.dumps(schema), content_type='application/json')
