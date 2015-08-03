@@ -16,7 +16,7 @@ import logging
 @login_required
 def home(request):
 	context = {'user': request.user}
-	return render(request, 'base.html', context)
+	return render(request, 'home.html', context)
 
 def register(request):
 	if request.user.is_authenticated():
