@@ -1,14 +1,23 @@
 import osf_settings
 import sys
-sys.path.insert(0, '/Users/laurenbarker/GitHub/COS-Admin-Interface/cosAdminInterface/adminInterface/osf.io/')
+import os
+
+def submodule_path(file):
+    path = os.path.dirname(os.path.dirname(os.path.abspath(file)))
+    path = path + '/cosAdminInterface/adminInterface/osf.io/'
+    return path
+
+sys.path.insert(0, submodule_path('utils.py'))
 from framework.utils import iso8601format
 from website.project.metadata.utils import serialize_meta_schema
 from website.project.model import Node
 
+
+
 def serialize_draft_registration(draft, auth=None):
     
     import sys
-    sys.path.insert(0, '/Users/laurenbarker/GitHub/COS-Admin-Interface/cosAdminInterface/adminInterface/osf.io/')
+    sys.path.insert(0, submodule_path('utils.py'))
     from website.profile.utils import serialize_user  # noqa
     #import ipdb; ipdb.set_trace()
     node = draft.branched_from
