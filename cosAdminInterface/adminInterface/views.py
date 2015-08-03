@@ -13,9 +13,11 @@ from adminInterface.forms import RegistrationForm, LoginForm
 from adminInterface.models import AdminUser
 import logging
 
-
-def is_in_prereg(user):
+def is_in_prereg_group(user):
 	return user.groups.filter(name='prereg_group').exists()
+
+def is_in_general_administrator_group(user):
+	return user.groups.filter(name='general_administrator_group').exists()
 
 @login_required
 def home(request):
@@ -69,7 +71,13 @@ def logout(request):
 	return redirect('/login/')
 
 @login_required
-@user_passes_test(is_in_prereg)
+@user_passes_test(is_in_general_administrator_group)
+def users(request):
+	context = {}
+	return render(request, 'users.html', context)
+
+@login_required
+@user_passes_test(is_in_prereg_group)
 def prereg(request):
 	context = {'user': request.user}
 	return render(request, 'prereg/prereg.html', context)

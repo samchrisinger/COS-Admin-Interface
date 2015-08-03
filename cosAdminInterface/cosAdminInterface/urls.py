@@ -8,6 +8,7 @@ urlpatterns = [
 	url(r'^register/$', 'adminInterface.views.register', name='register'),
 	url(r'^login/$', 'adminInterface.views.login', name='login'),
 	url(r'^logout/$', 'adminInterface.views.logout', name='logout'),
+	url(r'^users/$', 'adminInterface.views.users', name='users'),
 	url(r'^prereg/$', 'adminInterface.views.prereg', name='prereg'),
 	url(r'^prereg-form/(?P<draft_pk>[0-9a-z]+)/$', 'adminInterface.views.prereg_form', name='prereg_form'),
 	url(r'^get-drafts/$', 'adminInterface.views.get_drafts', name='get_drafts'),
