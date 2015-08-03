@@ -1,45 +1,10 @@
 'use strict';
 
-//var $osf = require('../osfHelpers');
+var $osf = require('js/osfHelpers');
 var ko = require('knockout');
 var $ = require('jquery');
 
 var drafts;
-
-/**
-  * A thin wrapper around ko.applyBindings that ensures that a view model
-  * is bound to the expected element. Also shows the element (and child elements) if it was
-  * previously hidden by applying the 'scripted' CSS class.
-  *
-  * Takes a ViewModel and a selector (string) or a DOM element.
-  */
-var applyBindings = function(viewModel, selector) {
-    var elem, cssSelector;
-    var $elem = $(selector);
-    if (typeof(selector.nodeName) === 'string') { // dom element
-        elem = selector;
-        // NOTE: Only works with DOM elements that have an ID
-        cssSelector = '#' + elem.id;
-    } else {
-        elem = $elem[0];
-        cssSelector = selector;
-    }
-    if ($elem.length === 0) {
-        throw "No elements matching selector '" + selector + "'";  // jshint ignore: line
-    }
-    if ($elem.length > 1) {
-        throw "Can't bind ViewModel to multiple elements."; // jshint ignore: line
-    }
-    // Ensure that the bound element is shown
-    if ($elem.hasClass('scripted')){
-        $elem.show();
-    }
-    // Also show any child elements that have the scripted class
-    $(cssSelector + ' .scripted').each(function(elm) {
-        $(this).show();
-    });
-    ko.applyBindings(viewModel, $elem[0]);
-};
 
 ko.bindingHandlers.enterkey = {
     init: function (element, valueAccessor, allBindings, viewModel) {
@@ -173,6 +138,9 @@ Notes.prototype.stopEditing = function() {
 var Row = function(params) {
     var self = this;
 
+    self.params = params;
+    self.viewingDraft = ko.observable(false);
+
     self.editing = ko.observable(false);
 
     self.title = params.registration_metadata.q1.value;
@@ -212,11 +180,13 @@ Row.prototype.formatTime = function(time) {
     return parsedTime[0]; 
 };
 
+// TODO
 Row.prototype.goToDraft = function(data, event) {
     var self = this;
     if (self.editing() === false) {
-        var path = "/project/" + data.branched_from.node.id + "/draft/" + data.pk;
-        location.href = path;
+        self.viewingDraft(true);
+        //var path = "/project/" + data.branched_from.node.id + "/draft/" + data.pk;
+        document.location.href = '/prereg-form/' + self.params.pk + '/';
     }
 };
 
@@ -249,7 +219,7 @@ AdminView.prototype.init = function() {
     var self = this;
 
     // '#prereg-row'
-    applyBindings(self, self.adminSelector);
+    $osf.applyBindings(self, self.adminSelector);
 
     var getDrafts = self.getDrafts();
 

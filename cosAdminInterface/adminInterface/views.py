@@ -1,16 +1,17 @@
+from database import get_all_drafts, get_schema, get_draft
 from django.http import HttpResponseRedirect
 from django.contrib.auth import authenticate, logout as logout_user, login as auth_login
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.models import User
 from django.shortcuts import render, redirect
 
-from database import get_all_drafts
 from django.http import HttpResponse
 import json
+import utils
 
 from adminInterface.forms import RegistrationForm, LoginForm
 from adminInterface.models import AdminUser
-import logging, utils
+import logging
 
 
 def is_in_prereg(user):
@@ -19,7 +20,7 @@ def is_in_prereg(user):
 @login_required
 def home(request):
 	context = {'user': request.user}
-	return render(request, 'base.html', context)
+	return render(request, 'home.html', context)
 
 def register(request):
 	if request.user.is_authenticated():
@@ -74,9 +75,18 @@ def prereg(request):
 	return render(request, 'prereg/prereg.html', context)
 
 @login_required
+def prereg_form(request, draft_pk):
+	draft = get_draft(draft_pk)
+	#import ipdb; ipdb.set_trace()
+	context = {'data': json.dumps(draft)}
+	return render(request, 'prereg/edit_draft_registration.html', context)
+
+@login_required
 def get_drafts(request):
 	all_drafts = get_all_drafts()
 	return HttpResponse(json.dumps(all_drafts), content_type='application/json')
 
-# def analytics(request):
-# 	return render(request, 'analytics.html', {})
+@login_required
+def get_schemas(request):
+	schema = get_schema()
+	return HttpResponse(json.dumps(schema), content_type='application/json')

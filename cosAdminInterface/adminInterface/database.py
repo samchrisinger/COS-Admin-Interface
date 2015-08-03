@@ -1,14 +1,26 @@
 import pymongo
 import os
+import httplib as http
 
+from modularodm import Q
 from modularodm import storage
-from modularodm import fields
-from modularodm.storedobject import StoredObject
 
-# from modularodm.query.querydialect import DefaultQueryDialect as Q
+# importing from the osf.io submodule
+import sys
+sys.path.insert(0, '/Users/laurenbarker/GitHub/COS-Admin-Interface/cosAdminInterface/adminInterface/osf.io/')
+from website.project.model import MetaSchema, DraftRegistration, Node
+from framework.mongo.utils import get_or_http_error
+from framework.auth.core import User
+from framework.auth import Auth
+from website.project.metadata.utils import serialize_meta_schema, serialize_draft_registration
+from website.app import do_set_backends, init_addons
+from website import settings as osf_settings
 
-import osf_settings
 import utils
+
+init_addons(osf_settings, routes=False)
+do_set_backends(osf_settings)
+adminUser = User.load('dsmpw')
 
 def get_mongo_client():
     """Create MongoDB client and authenticate database.
@@ -29,62 +41,48 @@ def _get_current_database():
     """
     return client[osf_settings.DB_NAME]
 
-db = _get_current_database()
+# create new instance of a class and then use .save to update db
+# db = _get_current_database()
+# DraftRegistration.set_storage(storage.MongoStorage(db, collection="draftregistration"))
+# MetaSchema.set_storage(storage.MongoStorage(db, collection="metaschema"))
+# User.set_storage(storage.MongoStorage(db, collection="user"))
+# Node.set_storage(storage.MongoStorage(db, collection="node"))
 
-print client
-print db
-
-class AddonModelMixin(StoredObject):
-
-    _meta = {
-        'abstract': True,
-    }
-
-class DraftRegistration(AddonModelMixin, StoredObject):
-
-    is_draft_registration = True
-
-    _id = fields.StringField(primary=True, default=lambda: str(ObjectId()))
-
-    datetime_initiated = fields.DateTimeField(auto_now_add=True)
-    datetime_updated = fields.DateTimeField(auto_now=True)
-
-    branched_from = fields.ForeignField('node')
-
-    initiator = fields.ForeignField('user')
-
-    # Dictionary field mapping question id to a question's comments and answer
-    # {<qid>: { 'comments': [<Comment1>, <Comment2>], 'value': 'string answer }
-    registration_metadata = fields.DictionaryField(default=dict)
-    registration_schema = fields.ForeignField('metaschema')
-    registered_node = fields.ForeignField('node')
-
-    storage = fields.ForeignField('osfstoragenodesettings')
-
-    # Dictionary field mapping
-    # { 'requiresApproval': true, 'fulfills': [{ 'name': 'Prereg Prize', 'info': <infourl>  }]  }
-    config = fields.DictionaryField()
-
-    # Dictionary field mapping a draft's states during the review process to their value
-    # { 'isApproved': false, 'isPendingReview': false, 'paymentSent': false }
-    flags = fields.DictionaryField()
 
 def get_all_drafts():
-	# set the collection to retrieve data from
-	draftCollection = db['draftregistration']
-
 	# TODO 
 	# add query parameters to only retrieve submitted drafts
-	all_drafts = draftCollection.find()
+	all_drafts = DraftRegistration.find()
 
-	auth = None
+	auth = Auth(adminUser)
 
 	serialized_drafts = {
 		'drafts': [utils.serialize_draft_registration(d, auth) for d in all_drafts]
 	}
 	return serialized_drafts
 
-# User.set_storage(storage.MongoStorage(db, collection="user"))
-# use class for draft (should be the same as what is already created)
-# create new instance of a class and then use .save to update db
-# DraftRegistration.set_storage(storage.MongoStorage(db, collection=draftCollection))
+get_schema_or_fail = lambda query: get_or_http_error(MetaSchema, query)	
+
+def get_draft(draft_pk):
+	auth = Auth(adminUser)
+	
+	draft = DraftRegistration.find(
+        Q('_id', 'eq', draft_pk)
+    )
+
+	return utils.serialize_draft_registration(draft[0], auth), http.OK
+
+def get_schema():
+	metaCollection = db['metaschema']
+	all_schemas = metaCollection.find()
+	serialized_schemas = {
+		'schemas': [utils.serialize_meta_schema(s) for s in all_schemas]
+	}
+	return serialized_schemas
+
+def get_metaschema(schema_name, schema_version=1):
+    meta_schema = get_schema_or_fail(
+        Q('name', 'eq', schema_name) &
+        Q('schema_version', 'eq', schema_version)
+    )
+    return serialize_meta_schema(meta_schema), http.OK

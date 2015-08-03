@@ -9,8 +9,9 @@ urlpatterns = [
 	url(r'^login/$', 'adminInterface.views.login', name='login'),
 	url(r'^logout/$', 'adminInterface.views.logout', name='logout'),
 	url(r'^prereg/$', 'adminInterface.views.prereg', name='prereg'),
+	url(r'^prereg-form/(?P<draft_pk>[0-9a-z]+)/$', 'adminInterface.views.prereg_form', name='prereg_form'),
 	url(r'^get-drafts/$', 'adminInterface.views.get_drafts', name='get_drafts'),
-	#url(r'^analystics/$', 'adminInterface.views.analytics', name='analytics'),
+	url(r'^get-schemas/$', 'adminInterface.views.get_schemas', name='get_schemas'),
     url(r'^admin/', include(admin.site.urls)),
 ]
 

@@ -1,24 +1,31 @@
 import osf_settings
+import sys
+sys.path.insert(0, '/Users/laurenbarker/GitHub/COS-Admin-Interface/cosAdminInterface/adminInterface/osf.io/')
+from framework.utils import iso8601format
+from website.project.metadata.utils import serialize_meta_schema
+from website.project.model import Node
 
 def serialize_draft_registration(draft, auth=None):
-    node = draft["branched_from"]
+    
+    import sys
+    sys.path.insert(0, '/Users/laurenbarker/GitHub/COS-Admin-Interface/cosAdminInterface/adminInterface/osf.io/')
+    from website.profile.utils import serialize_user  # noqa
     #import ipdb; ipdb.set_trace()
-
+    node = draft.branched_from
+    
     return {
-        'pk': draft["_id"],
-        'branched_from': draft["branched_from"],
-        'initiator': draft["initiator"],
-        'registration_metadata': draft["registration_metadata"],
-        'registration_schema': draft["registration_schema"],
-        'initiated': str(draft["datetime_initiated"]),
-        'updated': str(draft["datetime_updated"]),
-        'registered': draft["registered_node"],
-        #'is_pending_review': draft["is_pending_review"],
-        'config': draft["config"],
-        'flags': draft["flags"],
+        'pk': draft._id,
+        'branched_from': serialize_node(draft.branched_from, auth),
+        'initiator': serialize_user(draft.initiator, full=True),
+        'registration_metadata': draft.registration_metadata,
+        'registration_schema': serialize_meta_schema(draft.registration_schema),
+        'initiated': str(draft.datetime_initiated),
+        'updated': str(draft.datetime_updated),
+        'config': draft.config or {},
+        'flags': draft.flags,
         # 'urls': {
-        #     'edit': node.web_url_for('edit_draft_registration', draft_id=draft._id),
-        #     'before_register': node.api_url_for('draft_before_register', draft_id=draft._id),
+        #     'edit': node.web_url_for('edit_draft_registration_page', draft_id=draft._id),
+        #     'before_register': node.api_url_for('project_before_register'),
         #     'register': node.api_url_for('register_draft_registration', draft_id=draft._id),
         #     'register_page': node.web_url_for('draft_before_register_page', draft_id=draft._id),
         #     'registrations': node.web_url_for('node_registrations')
@@ -32,24 +39,7 @@ def serialize_node(node, auth, primary=False):
     user = auth.user
 
     parent = node.parent_node
-    if user:
-        dashboard = find_dashboard(user)
-        dashboard_id = dashboard._id
-        in_dashboard = dashboard.pointing_at(node._primary_key) is not None
-    else:
-        in_dashboard = False
-        dashboard_id = ''
-    view_only_link = auth.private_key or request.args.get('view_only', '').strip('/')
-    anonymous = has_anonymous_link(node, auth)
-    widgets, configs, js, css = _render_addon(node)
-    redirect_url = node.url + '?view_only=None'
 
-    # Before page load callback; skip if not primary call
-    if primary:
-        for addon in node.get_addons():
-            messages = addon.before_page_load(node, user) or []
-            for message in messages:
-                status.push_status_message(message, 'info', dismissible=False)
     data = {
         'node': {
             'id': node._primary_key,
@@ -61,10 +51,7 @@ def serialize_node(node, auth, primary=False):
             'url': node.url,
             'api_url': node.api_url,
             'absolute_url': node.absolute_url,
-            'redirect_url': redirect_url,
             'display_absolute_url': node.display_absolute_url,
-            'update_url': node.api_url_for('update_node'),
-            'in_dashboard': in_dashboard,
             'is_public': node.is_public,
             'is_archiving': node.archiving,
             'date_created': iso8601format(node.date_created),
@@ -91,8 +78,6 @@ def serialize_node(node, auth, primary=False):
             'templated_count': len(node.templated_list),
             'watched_count': len(node.watchconfig__watched),
             'private_links': [x.to_json() for x in node.private_links_active],
-            'link': view_only_link,
-            'anonymous': anonymous,
             'points': len(node.get_points(deleted=False, folders=False)),
             'piwik_site_id': node.piwik_site_id,
             'comment_level': node.comment_level,
@@ -129,16 +114,9 @@ def serialize_node(node, auth, primary=False):
             'username': user.username if user else None,
             'fullname': user.fullname if user else '',
             'can_comment': node.can_comment(auth),
-            'show_wiki_widget': _should_show_wiki_widget(node, user),
-            'dashboard_id': dashboard_id,
         },
-        'badges': _get_badge(user),
         # TODO: Namespace with nested dicts
         'addons_enabled': node.get_addon_names(),
-        'addons': configs,
-        'addon_widgets': widgets,
-        'addon_widget_js': js,
-        'addon_widget_css': css,
         'node_categories': Node.CATEGORY_MAP,
     }
     return data
