@@ -11,9 +11,9 @@ class AdminUserInline(admin.StackedInline):
 	can_delete = False
 
 class UserAdmin(UserAdmin):
-    list_filter = ('is_staff', 'is_superuser', 'is_active', 'groups')
-    search_fields = ('email',)
-    ordering = ('email',)
+    list_filter = ('is_staff', 'groups__name')
+    search_fields = ('username', 'email')
+    ordering = ('username',)
     filter_horizontal = ('groups', 'user_permissions',)
 
     inlines = (AdminUserInline, )
