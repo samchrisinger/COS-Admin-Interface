@@ -6,8 +6,9 @@ from modularodm import Q
 from modularodm import storage
 
 # importing from the osf.io submodule
+from utils import submodule_path
 import sys
-sys.path.insert(0, '/Users/laurenbarker/GitHub/COS-Admin-Interface/cosAdminInterface/adminInterface/osf.io/')
+sys.path.insert(0, submodule_path('utils.py'))
 from website.project.model import MetaSchema, DraftRegistration, Node
 from framework.mongo.utils import get_or_http_error
 from framework.auth.core import User
