@@ -61,7 +61,17 @@ def get_all_drafts():
 	}
 	return serialized_drafts
 
-get_schema_or_fail = lambda query: get_or_http_error(MetaSchema, query)
+get_schema_or_fail = lambda query: get_or_http_error(MetaSchema, query)	
+
+def get_draft(draft_pk):
+	auth = Auth(adminUser)
+	
+	draft = DraftRegistration.find(
+        Q('_id', 'eq', draft_pk)
+    )
+
+	return utils.serialize_draft_registration(draft[0], auth), http.OK
+
 def get_schema():
 	metaCollection = db['metaschema']
 	all_schemas = metaCollection.find()
@@ -76,16 +86,3 @@ def get_metaschema(schema_name, schema_version=1):
         Q('schema_version', 'eq', schema_version)
     )
     return serialize_meta_schema(meta_schema), http.OK
-
- # def edit_draft_registration(auth, node, draft_id, **kwargs):
-#     draft = DraftRegistration.load(draft_id)
-#     if not draft:
-#         raise HTTPError(http.NOT_FOUND)
-
-#     messages = draft.before_edit(auth)
-#     for message in messages:
-#         status.push_status_message(message)
-
-#     ret = project_utils.serialize_node(node, auth, primary=True)
-#     ret['draft'] = serialize_draft_registration(draft, auth)
-#     return ret

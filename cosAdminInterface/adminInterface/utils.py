@@ -10,9 +10,9 @@ def serialize_draft_registration(draft, auth=None):
     import sys
     sys.path.insert(0, '/Users/laurenbarker/GitHub/COS-Admin-Interface/cosAdminInterface/adminInterface/osf.io/')
     from website.profile.utils import serialize_user  # noqa
-
-    node = draft.branched_from
     #import ipdb; ipdb.set_trace()
+    node = draft.branched_from
+    
     return {
         'pk': draft._id,
         'branched_from': serialize_node(draft.branched_from, auth),

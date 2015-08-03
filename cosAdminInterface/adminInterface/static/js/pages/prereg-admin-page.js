@@ -3,8 +3,6 @@
 var $osf = require('js/osfHelpers');
 var ko = require('knockout');
 var $ = require('jquery');
-var registrationUtils = require('js/registrationUtils');
-var RegistrationEditor = registrationUtils.RegistrationEditor;
 
 var drafts;
 
@@ -188,16 +186,7 @@ Row.prototype.goToDraft = function(data, event) {
     if (self.editing() === false) {
         self.viewingDraft(true);
         //var path = "/project/" + data.branched_from.node.id + "/draft/" + data.pk;
-        var draftEditor = new RegistrationEditor({
-            schemas: '/get-schemas/',
-            //update: node.urls.api + 'draft/{draft_pk}/',
-            //get: node.urls.api + 'draft/{draft_pk}/'
-        }, 'registrationEditor');
-
-        var draft = new registrationUtils.Draft(self.params);
-        draftEditor.init(draft);
-        window.draftEditor = draftEditor;
-        $osf.applyBindings(draftEditor, '#draftRegistrationScope');
+        document.location.href = '/prereg-form/' + self.params.pk + '/';
     }
 };
 
