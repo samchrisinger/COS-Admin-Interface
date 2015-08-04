@@ -4,28 +4,18 @@
 </script>
 
 <script type="text/html" id="text">
-  <input data-bind="valueUpdate: 'keyup',
-                    event: {'keyup': save},
-                    value: value"
-         type="text" class="form-control" />
+  <input data-bind="value: value" type="text" readonly="readonly" class="form-control" />
 </script>
 <script type="text/html" id="match">
-  <input data-bind="valueUpdate: 'keyup',
-                    event: {'keyup': save},
-                    value: value,
-                    attr.placeholder: match" type="text" class="form-control" />
+  <input data-bind="value: value,
+                    attr.placeholder: match" type="text" readonly="readonly" class="form-control" />
 </script>
 <script type="text/html" id="textarea">
-  <textarea data-bind="valueUpdate: 'keyup',
-                       event: {'keyup': save},
-                       textInput: value"
-            class="form-control"> </textarea>
+  <textarea data-bind="textInput: value" readonly="readonly" class="form-control"> </textarea>
 </script>
 <!-- Number Types -->
 <script type="text/html" id="number">
-  <input data-bind="valueUpdate: 'keyup',
-                    event: {'keyup': save},
-                    value: value" type="text" class="form-control">
+  <input data-bind="value: value" type="text" readonly="readonly" class="form-control">
 </script>
 <!-- Enum Types -->
 <script type="text/html" id="choose">
@@ -35,10 +25,7 @@
 <script type="text/html" id="singleselect">
   <div class="col-md-12" data-bind="foreach: {data: options, as: 'option'}">
     <p>
-      <input type="radio" data-bind="event: {
-                                       'click': $parent.save
-                                     },
-                                     checked: $parent.value,
+      <input type="radio" readonly="readonly" data-bind="checked: $parent.value,
                                      value: option"/>
       <span data-bind="text: option"></span>
     </p>
