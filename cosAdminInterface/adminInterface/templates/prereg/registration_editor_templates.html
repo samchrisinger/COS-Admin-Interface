@@ -25,7 +25,7 @@
 <script type="text/html" id="singleselect">
   <div class="col-md-12" data-bind="foreach: {data: options, as: 'option'}">
     <p>
-      <input type="radio" readonly="readonly" data-bind="checked: $parent.value,
+      <input type="radio" disabled="disabled" data-bind="checked: $parent.value,
                                      value: option"/>
       <span data-bind="text: option"></span>
     </p>
