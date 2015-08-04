@@ -20,40 +20,33 @@ ko.bindingHandlers.enterkey = {
     }
 };
 
-var CommentsSent = function() {
+var Assignee = function() {
     var self = this;
     self.edit = ko.observable(false);
-    self.commentsSent = ko.observable('no');
+    // TODO query db for prereg users
+    self.assignee = ko.observableArray(['none', 'Lauren', 'David', 'leb']);
 };
 
-CommentsSent.prototype.enlargeIcon = function(data, event) {
+Assignee.prototype.enlargeIcon = function(data, event) {
     var icon = event.currentTarget;
     $(icon).addClass("fa-2x");
 };
 
-CommentsSent.prototype.shrinkIcon = function(data, event) {
+Assignee.prototype.shrinkIcon = function(data, event) {
     var icon = event.currentTarget;
     $(icon).removeClass("fa-2x");
 };
-CommentsSent.prototype.editItem = function() {
+Assignee.prototype.editItem = function() {
     var self = this;
-    self.editing(true);
-    self.commentsSent.edit(true);
-};
-
-CommentsSent.prototype.stopEditing = function() {
-    var self = this;
-    self.editing(false);
-    self.commentsSent.edit(false);
+    self.assignee.edit(!self.editing);
+    self.editing(!self.editing);
+    
 };
 
 var ProofOfPub = function() {
     var self = this;
     self.edit = ko.observable(false);
-    self.proofOfPub = ko.observable("no");
-    self.proofOfPub.subscribe(function (value) {
-        self.change();
-    });
+    self.proofOfPub = ko.observableArray(['Published Article Not Yet Submitted', 'Published Article Submitted', 'Published Article Under Review', 'Published Article Approved', 'Published Article Rejected']);
 };
 
 ProofOfPub.prototype.enlargeIcon = function(data, event) {
@@ -67,18 +60,8 @@ ProofOfPub.prototype.shrinkIcon = function(data, event) {
 };
 ProofOfPub.prototype.editItem = function() {
     var self = this;
-    self.editing(true);
-    self.proofOfPub.edit(true);
-};
-
-ProofOfPub.prototype.stopEditing = function() {
-    var self = this;
-    self.editing(false);
-    self.proofOfPub.edit(false);
-};
-
-ProofOfPub.prototype.change = function() {
-    var self = this;
+    self.proofOfPub.edit(!self.editing);
+    self.editing(!self.editing);
 };
 
 var PaymentSent = function() {
@@ -145,23 +128,17 @@ var Row = function(params) {
 
     self.title = params.registration_metadata.q1.value;
     self.fullname = params.initiator.fullname;
-    self.username = params.initiator.username;
+    self.username = params.initiator.emails[0].address;
     self.initiated = self.formatTime(params.initiated);
     self.updated = self.formatTime(params.updated);
     // this will be in flags when using the proper branch
-    self.approved = params.is_pending_review;
-    if (params.registered === null) {
-        self.registered = 'no';
-    } else {
-        self.registered = 'yes';
-    }
-    
+    self.status = ko.observable('Under Review');
     
     //variables for editing items in row
-    self.commentsSent = new CommentsSent();    
     self.proofOfPub = new ProofOfPub();
     self.paymentSent = new PaymentSent();
     self.notes = new Notes();
+    self.assignee = new Assignee(); 
 };
 
 
