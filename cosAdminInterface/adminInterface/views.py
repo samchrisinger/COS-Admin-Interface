@@ -98,3 +98,8 @@ def get_drafts(request):
 def get_schemas(request):
 	schema = get_schema()
 	return HttpResponse(json.dumps(schema), content_type='application/json')
+
+# TODO update so works in this context
+@login_required
+def save_draft(request, draft_pk):
+	draft = ""

@@ -48,6 +48,31 @@ def get_draft(draft_pk):
 
 	return utils.serialize_draft_registration(draft[0], auth), http.OK
 
+# TODO update so works in this context
+def update_draft_registration(auth, node, draft_pk, *args, **kwargs):
+    data = request.get_json()
+
+    draft = get_draft_or_fail(draft_pk)
+
+    schema_data = data.get('schema_data', {})
+
+    schema_name = data.get('schema_name')
+    schema_version = data.get('schema_version', 1)
+    if schema_name:
+        meta_schema = get_schema_or_fail(
+            Q('name', 'eq', schema_name) &
+            Q('schema_version', 'eq', schema_version)
+        )
+        existing_schema = draft.registration_schema
+        if (existing_schema.name, existing_schema.schema_version) != (meta_schema.name, meta_schema.schema_version):
+            draft.registration_schema = meta_schema
+
+    try:
+        draft.update_metadata(schema_data)
+    except (NodeStateError):
+        raise HTTPError(http.BAD_REQUEST)
+    return serialize_draft_registration(draft, auth), http.OK
+
 def get_schema():
 	metaCollection = db['metaschema']
 	all_schemas = metaCollection.find()
