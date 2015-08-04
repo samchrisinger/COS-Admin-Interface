@@ -23,32 +23,7 @@ init_addons(osf_settings, routes=False)
 do_set_backends(osf_settings)
 adminUser = User.load('dsmpw')
 
-def get_mongo_client():
-    """Create MongoDB client and authenticate database.
-    """
-    client = pymongo.MongoClient(osf_settings.DB_HOST, osf_settings.DB_PORT)
-
-    db = client[osf_settings.DB_NAME]
-
-    if osf_settings.DB_USER and osf_settings.DB_PASS:
-        db.authenticate(osf_settings.DB_USER, osf_settings.DB_PASS)
-
-    return client
-
-client = get_mongo_client()    
-
-def _get_current_database():
-    """Getter for `database` proxy.
-    """
-    return client[osf_settings.DB_NAME]
-
 # create new instance of a class and then use .save to update db
-# db = _get_current_database()
-# DraftRegistration.set_storage(storage.MongoStorage(db, collection="draftregistration"))
-# MetaSchema.set_storage(storage.MongoStorage(db, collection="metaschema"))
-# User.set_storage(storage.MongoStorage(db, collection="user"))
-# Node.set_storage(storage.MongoStorage(db, collection="node"))
-
 
 def get_all_drafts():
 	# TODO 
