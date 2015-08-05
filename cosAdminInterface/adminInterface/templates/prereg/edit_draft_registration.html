@@ -1,13 +1,15 @@
 {% extends 'base.html' %}
 {% load render_bundle from webpack_loader %}
+{% load staticfiles %}
 
 {% block content %}
 {% render_bundle 'vendor' %}
+<link href="{% static 'css/registrations.css' %}" rel="stylesheet" type="text/css" />
 <script>
    var context = {{ data|safe }};
 </script>
 
-<div class="container" id="draftRegistrationScope">
+<div class="container scripted" id="draftRegistrationScope">
   <div class="row">
     <h3>
       <div class="row">
