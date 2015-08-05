@@ -45,7 +45,7 @@ def get_draft(draft_pk):
 	draft = DraftRegistration.find(
         Q('_id', 'eq', draft_pk)
     )
-
+	import ipdb; ipdb.set_trace()
 	return utils.serialize_draft_registration(draft[0], auth), http.OK
 
 # TODO update so works in this context
@@ -74,8 +74,7 @@ def update_draft_registration(auth, node, draft_pk, *args, **kwargs):
     return serialize_draft_registration(draft, auth), http.OK
 
 def get_schema():
-	metaCollection = db['metaschema']
-	all_schemas = metaCollection.find()
+	all_schemas = MetaSchema.find()
 	serialized_schemas = {
 		'schemas': [utils.serialize_meta_schema(s) for s in all_schemas]
 	}
