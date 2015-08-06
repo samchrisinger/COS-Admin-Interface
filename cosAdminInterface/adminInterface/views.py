@@ -2,6 +2,7 @@ from database import get_all_drafts, get_schema, get_draft
 from django.http import HttpResponseRedirect
 from django.contrib.auth import authenticate, logout as logout_user, login as auth_login
 from django.contrib.auth.decorators import login_required, user_passes_test
+from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.models import User
 from django.shortcuts import render, redirect
 
@@ -101,5 +102,29 @@ def get_schemas(request):
 
 # TODO update so works in this context
 @login_required
-def save_draft(request, draft_pk):
-	draft = ""
+@csrf_exempt
+def update_draft(request, draft_pk): # (auth, node, draft_pk, *args, **kwargs):
+	import ipdb; ipdb.set_trace()
+
+	data = request.get_json()
+
+	draft = get_draft_or_fail(draft_pk)
+
+	schema_data = data.get('schema_data', {})
+
+	schema_name = data.get('schema_name')
+	schema_version = data.get('schema_version', 1)
+	if schema_name:
+	    meta_schema = get_schema_or_fail(
+	        Q('name', 'eq', schema_name) &
+	        Q('schema_version', 'eq', schema_version)
+	    )
+	    existing_schema = draft.registration_schema
+	    if (existing_schema.name, existing_schema.schema_version) != (meta_schema.name, meta_schema.schema_version):
+	        draft.registration_schema = meta_schema
+
+	try:
+	    draft.update_metadata(schema_data)
+	except (NodeStateError):
+	    raise HTTPError(http.BAD_REQUEST)
+	return serialize_draft_registration(draft, auth), http.OK
