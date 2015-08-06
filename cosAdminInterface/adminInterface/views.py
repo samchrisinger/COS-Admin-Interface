@@ -104,7 +104,7 @@ def get_schemas(request):
 @login_required
 @csrf_exempt
 def update_draft(request, draft_pk): # (auth, node, draft_pk, *args, **kwargs):
-	import ipdb; ipdb.set_trace()
+	#import ipdb; ipdb.set_trace()
 
 	data = request.get_json()
 
