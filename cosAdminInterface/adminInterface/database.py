@@ -48,6 +48,15 @@ def get_draft(draft_pk):
 	#import ipdb; ipdb.set_trace()
 	return utils.serialize_draft_registration(draft[0], auth), http.OK
 
+def get_draft_obj(draft_pk):
+	auth = Auth(adminUser)
+	
+	draft = DraftRegistration.find(
+        Q('_id', 'eq', draft_pk)
+    )
+	#import ipdb; ipdb.set_trace()
+	return draft[0], auth
+
 def get_schema():
 	all_schemas = MetaSchema.find()
 	serialized_schemas = {
