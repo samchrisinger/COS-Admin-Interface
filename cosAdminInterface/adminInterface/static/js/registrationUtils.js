@@ -602,15 +602,6 @@ RegistrationEditor.prototype.context = function(data) {
     }
     return data;
 };
-/**
- * Extend the editor's recognized types
- *
- * @param {String} type: unique type
- * @param {Constructor} ViewModel
- **/
-// RegistrationEditor.prototype.extendEditor = function(type, ViewModel) {
-//     this.extensions[type] = ViewModel;
-// };
 RegistrationEditor.prototype.check = function() {
     var self = this;
 
@@ -626,7 +617,6 @@ RegistrationEditor.prototype.check = function() {
         window.location = self.draft().urls.register_page;
     }
 };
-
 RegistrationEditor.prototype.viewComments = function() {
   var self = this;
 
@@ -884,33 +874,6 @@ RegistrationManager.prototype.init = function() {
         self.loading(false);
     });
 };
-// RegistrationManager.prototype.refresh = function() {
-//     var self = this;
-
-//     var getSchemas = self.getSchemas();
-
-//     getSchemas.then(function(response) {
-//         self.schemas(
-//             $.map(response.meta_schemas, function(schema) {
-//                 return new MetaSchema(schema);
-//             })
-//         );
-//     });
-
-//     var getDraftRegistrations = self.getDraftRegistrations();
-
-//     getDraftRegistrations.then(function(response) {
-//         self.drafts(
-//             $.map(response.drafts, function(draft) {
-//                 return new Draft(draft);
-//             })
-//         );
-//     });
-
-//     $.when(getSchemas, getDraftRegistrations).then(function() {
-//         self.loading(false);
-//     });
-// };
 RegistrationManager.prototype.deleteDraft = function(draft) {
     var self = this;
 
