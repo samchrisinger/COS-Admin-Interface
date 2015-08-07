@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% load render_bundle from webpack_loader %}
+
+{% block content %}
+{% render_bundle 'vendor' %}
+
+  <h1> Users Page </h1>
+  <h3>Administrative actions and filters on OSF Users go here</h3>
+
+{% endblock %}

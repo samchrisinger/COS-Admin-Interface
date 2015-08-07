@@ -1,0 +1,88 @@
+# OS generated files
+######################
+.DS_Store
+.DS_Store?
+._*
+\#*
+\.#*
+.Spotlight-V100
+.Trashes
+Icon?
+ehthumbs.db
+Thumbs.db
+*.swp
+*~
+
+# R
+#######################
+.Rhistory
+
+# Python
+#######################
+*.py[cod]
+*.so
+*.egg
+*.egg-info
+build
+eggs
+parts
+bin
+var
+sdist
+develop-eggs
+.installed.cfg
+lib64
+__pycache__
+pip-log.txt
+.coverage
+.tox
+nosetests.xml
+*.mo
+.idea
+.hg
+.hgignore
+env/
+.env
+mathenv
+cover/
+.konchrc
+
+# Assets
+########
+.webassets-cache
+public/
+adminInterface/static/public/
+adminInterface/static/mfr/
+adminInterface/static/vendor/node_modules/
+adminInterface/static/vendor/bower_components/
+node_modules
+# Allow robots.txt to be deployment-specific
+adminInterface/static/robots.local.txt
+
+# OSF-specific
+##############
+
+api/static/vendor
+
+# Logs
+logs/*
+
+# Add-ons
+#########
+.cache/
+.project
+.pydevproject
+.settings/
+src/
+website/mfrtemp/
+docs/_build
+website/static/img/badges
+
+# database
+db.sqlite3
+
+# static_root
+static_root
+
+# web_loader stat file
+webpack-stats.json
